@@ -1,0 +1,8 @@
+CREATE TABLE dbo.projects (
+    _id VARCHAR (40) PRIMARY KEY,
+    project_name VARCHAR (50) NOT NULL,
+    project_start DATETIME NOT NULL,
+    project_end DATETIME NOT NULL,
+    is_complete BIT NOT NULL CONSTRAINT PROJECT_IS_COMPLETE DEFAULT 0,
+    is_deleted BIT NOT NULL CONSTRAINT PROJECT_IS_DELETED DEFAULT 0
+);
