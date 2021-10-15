@@ -13,20 +13,25 @@ const signUpHandler = async (req, res) => {
 
   if (error) return res.status(400).send({ message: error.details[0].message });
 
-  const _id = uuid();
+  const id = uuid();
 
   const { firstname, lastname, email } = req.body;
 
   const password = await encryptPassword(req.body.password);
 
-  const sql = `INSERT INTO [dbo].[users]
-      (_id, first_name, last_name, email, password)
-    VALUES
-      ('${_id}', '${firstname}', '${lastname}', '${email}', '${password}')`;
+  try {
+    await db.execute("RegisterUser", {
+      id,
+      firstname,
+      lastname,
+      email,
+      password,
+    });
 
-  const result = await db.query(sql);
-
-  console.log(result);
+    res.send({ message: "User registered successfully" });
+  } catch (err) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
 };
 
 const signInHandler = async (req, res) => {
@@ -36,10 +41,7 @@ const signInHandler = async (req, res) => {
 
   const { email, password } = req.body;
 
-  // TODO: check out the json response thing on MSSQL
-  const sql = `SELECT * FROM users WHERE email = '${email}' FOR JSON AUTO;`;
-
-  const { recordset } = await db.query(sql);
+  const { recordset } = await db.execute("LoginUser", { email_address: email });
 
   const user = recordset[0];
 
@@ -50,7 +52,7 @@ const signInHandler = async (req, res) => {
   if (!validPassword)
     return res.status(400).json({ message: "Invalid Password" });
 
-  const response = _.pick(user, ["ID", "email"]);
+  const response = _.pick(user, ["_id", "email"]);
 
   jwt.sign({ response }, process.env.SECRETKEY, (err, token) => {
     if (err) return res.status(500).json({ message: "Internal Server Error" });

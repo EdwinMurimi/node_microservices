@@ -4,5 +4,6 @@ CREATE TABLE dbo.users (
     last_name VARCHAR (30) NOT NULL,
     email VARCHAR (50) NOT NULL,
     password VARCHAR(100) NOT NULL,
+    is_admin BIT CONSTRAINT USER_IS_ADMIN DEFAULT 0,
     is_deleted BIT CONSTRAINT USER_IS_DELETED DEFAULT 0
 );

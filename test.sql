@@ -1,15 +1,24 @@
-SELECT * FROM dbo.users;
+SELECT * FROM dbo.projects;
 
-INSERT INTO [dbo].[users]
+DELETE FROM dbo.users;
+
+DROP TABLE dbo.users;
+
+INSERT INTO [dbo].[projects]
       (_id, 
-       first_name,
-       last_name, 
-       email, 
-       password)
+       project_name,
+       project_start, 
+       project_end
+      )
     VALUES
-      ('djhkhdf-349r-e48d-38wjndsjk',
-       'Edwin',
-       'Murimi', 
-       'edwin.murimi@thejitu.com', 
-       '12345678'
+      ('4784da10-2ce3-11ec-b31c-631196db0c2e',
+       'Amarok Inc.',
+       '2021-10-13',
+       '2021-12-12'
     );
+
+ALTER TABLE [dbo].[tasks] 
+ADD CONSTRAINT USER_ID_ON_TASKS FOREIGN KEY (user_Id) REFERENCES dbo.users (_id);
+
+ALTER TABLE [dbo].[tasks]
+ALTER COLUMN task_name VARCHAR(255);
