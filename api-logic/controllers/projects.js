@@ -2,39 +2,34 @@ const { v4: uuidv4 } = require("uuid");
 
 const db = require("../config");
 const { projectValidation } = require("../validation");
+const { parseResults } = require("../helpers");
 
 const getProjectsHandler = async (req, res) => {
-  try {
-    let { recordset } = await db.execute("GetProjects");
+  let results = await db.execute("GetProjects");
 
-    if (recordset.length === 0)
-      return res.status(404).send({
-        message: `No Projects are available`,
-      });
+  const projects = await parseResults(
+    results,
+    false,
+    "No Projects are available"
+  );
 
-    return res.status(200).send({ projects: recordset });
-  } catch (error) {
-    return res.status(500).send({ message: "Internal Server Error" });
-  }
+  return res.status(200).send({ projects });
 };
 
 const getProjectHandler = async (req, res) => {
   const { project_id } = req.params;
 
-  try {
-    let { recordset } = await db.execute("GetProject", {
-      project_id,
-    });
+  let results = await db.execute("GetProject", {
+    project_id,
+  });
 
-    if (recordset.length === 0)
-      return res
-        .status(404)
-        .send({ message: `No project with project id: ${project_id}` });
+  const project = await parseResults(
+    results,
+    true,
+    `No project with project id: ${project_id}`
+  );
 
-    return res.status(200).send({ project: recordset[0] });
-  } catch (error) {
-    return res.status(500).send({ error, message: "Internal Server Error" });
-  }
+  return res.status(200).send({ project });
 };
 
 const createProjectHandler = async (req, res) => {

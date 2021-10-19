@@ -15,6 +15,15 @@ app.use("/api/projects", projectsRoute);
 app.use("/api/tasks", tasksRoute);
 app.use("/api/users", usersRoute);
 
+app.use(function (err, req, res, next) {
+  console.log("ERR", err);
+
+  res.status(404).send({ message: err });
+
+  if (err.message)
+    return res.status(500).send({ message: "Internal Server Error" });
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () =>

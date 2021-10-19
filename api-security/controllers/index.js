@@ -7,6 +7,7 @@ require("dotenv").config();
 const db = require("../config");
 const encryptPassword = require("../helpers");
 const { signInValidation, signUpValidation } = require("../validation");
+const { parseResults } = require("../helpers");
 
 const signUpHandler = async (req, res) => {
   const { error } = signUpValidation(req.body);
@@ -41,11 +42,11 @@ const signInHandler = async (req, res) => {
 
   const { email, password } = req.body;
 
-  const { recordset } = await db.execute("LoginUser", { email_address: email });
+  const results = await db.execute("LoginUser", { email_address: email });
 
-  const user = recordset[0];
+  const user = await parseResults(results, true, "Account does not exist");
 
-  if (!user) return res.status(401).json({ message: "Account does not exist" });
+  // if (!user) return res.status(401).json({ message: "Account does not exist" });
 
   const validPassword = await bcrypt.compare(password, user.password);
 
