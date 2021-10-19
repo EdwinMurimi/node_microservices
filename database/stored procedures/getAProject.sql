@@ -12,5 +12,6 @@ BEGIN
 			project_start,
 			project_end,
 			is_complete
-	FROM	[dbo].[projects] WHERE _id = @project_id AND is_deleted = 0;
+	FROM	[dbo].[projects] WHERE _id = @project_id AND is_deleted = 0
+	FOR JSON PATH, INCLUDE_NULL_VALUES
 END;

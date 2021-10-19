@@ -16,12 +16,10 @@ app.use("/api/tasks", tasksRoute);
 app.use("/api/users", usersRoute);
 
 app.use(function (err, req, res, next) {
-  console.log("ERR", err);
-
-  res.status(404).send({ message: err });
-
   if (err.message)
     return res.status(500).send({ message: "Internal Server Error" });
+
+  res.status(404).send({ message: err });
 });
 
 const PORT = process.env.PORT;

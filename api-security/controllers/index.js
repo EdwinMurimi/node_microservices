@@ -46,7 +46,7 @@ const signInHandler = async (req, res) => {
 
   const user = await parseResults(results, true, "Account does not exist");
 
-  // if (!user) return res.status(401).json({ message: "Account does not exist" });
+  if (!user) return res.status(401).json({ message: "Account does not exist" });
 
   const validPassword = await bcrypt.compare(password, user.password);
 
